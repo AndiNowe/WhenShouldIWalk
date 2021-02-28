@@ -174,7 +174,7 @@ function ResponseRainy(props) {
           <h1 id="location">
             {w.location.name}, {w.location.country}
           </h1>
-          The best time for your walk is<br></br>
+          The best time for your rainy walk is<br></br>
           <span id="time">{optimumTime} </span>
         </p>
         <p>
