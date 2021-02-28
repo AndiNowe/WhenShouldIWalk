@@ -6,6 +6,8 @@ import WalkForm from "./Components/WalkForm.js";
 import WalkList from "./Components/WalkList.js";
 import CityForm from "./Components/CityForm.js";
 import Response from "./Components/Response.js";
+import ResponseRainy from "./Components/ResponseRainy.js";
+import ResponseNight from "./Components/ResponseNight.js";
 
 //Gets the baseurl and apikey from the process env
 const BASEURL = "http://api.weatherapi.com/v1";
@@ -98,16 +100,90 @@ function App() {
     }
   };
 
+  //Get 2 days of weather for nightmode
+  const getWeather2 = async location => {
+    console.log("location -->", location);
+    let url = `${BASEURL}/forecast.json?key=${API_KEY}&q=${location}&days=2`;
+    // sets the url for the query
+    setForecast(null);
+    //resets to null
+
+    try {
+      console.log(url);
+      let response = await fetch(url);
+
+      // call fetch, wait for return
+      if (response.ok) {
+        console.log("Response ok");
+        // server received and understood the request
+        let data = await response.json();
+        setForecast(data); //update state
+      } else {
+        console.log("Run into an error");
+        setError(`Server error: ${response.status} ${response.statusText}`);
+      }
+    } catch (err) {
+      console.log("Ended up in catch");
+      setError(`Network error: ${err.message}`);
+    }
+  };
+
   return (
     <div className="App">
       <Header />
+
+      <br></br>
+
+      <div class="dropdown show">
+        <a
+          class="btn btn-secondary dropdown-toggle"
+          href="#"
+          role="button"
+          id="dropdownMenuLink"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+        >
+          Choose your mood
+        </a>
+
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+          <a class="dropdown-item" href="/rainy">
+            Rainy mood
+          </a>
+          <a class="dropdown-item" href="/night">
+            Night mode
+          </a>
+          <a class="dropdown-item" href="/">
+            Sunny walk
+          </a>
+        </div>
+      </div>
+
       <Switch>
+        {/*Sunny path - deafult*/}
         {/* Using 'exact' else route will match everything */}
         <Route path="/" exact>
           <CityForm onSubmit={location => getWeather(location)} />
           {forecast && <Response forecast={forecast} />}
           <br></br>
         </Route>
+
+        {/*Rainy path*/}
+        <Route path="/rainy" exact>
+          <CityForm onSubmit={location => getWeather(location)} />
+          {forecast && <ResponseRainy forecast={forecast} />}
+          <br></br>
+        </Route>
+
+        {/*Night path*/}
+        <Route path="/night" exact>
+          <CityForm onSubmit={location => getWeather2(location)} />
+          {forecast && <ResponseNight forecast={forecast} />}
+          <br></br>
+        </Route>
+
+        {/*My Walks path*/}
         <Route path="/mywalks">
           <WalkForm
             onSubmit={(title, date, time) => addWalk(title, date, time)}
