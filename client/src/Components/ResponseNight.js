@@ -1,47 +1,72 @@
 import React from "react";
 
-function Response(props) {
+function ResponseNight(props) {
   let w = props.forecast;
 
   // *** INITIAL FETCH FOR AN ARRAY OF HOURS
-  let unfilteredHours = Object.entries(w.forecast.forecastday[0].hour); // first fetch of all hours
+  let unfilteredHoursDay1 = Object.entries(w.forecast.forecastday[0].hour);
+  // console.log(unfilteredHoursDay1);
+  let unfilteredHoursDay2 = Object.entries(w.forecast.forecastday[1].hour);
 
-  //**FINDS DAYLIGHT HOURS */
-  let sunsetHour =
+  //**FINDS NIGHT HOURS DAY 1*/
+  let sunsetHourDay1 =
     Number(w.forecast.forecastday[0].astro.sunset.slice(0, 2)) + 12; // finds and converts sunset
-  let sunriseHour = Number(w.forecast.forecastday[0].astro.sunrise.slice(0, 2)); //finds and converts sunset hours
+  let sunriseHourDay1 = Number(
+    w.forecast.forecastday[0].astro.sunrise.slice(0, 2)
+  ); //finds and converts sunrise hours
+
+  //**FINDS NIGHT HOURS DAY 1*/
+  let sunsetHourDay2 =
+    Number(w.forecast.forecastday[1].astro.sunset.slice(0, 2)) + 12; // finds and converts sunset
+  let sunriseHourDay2 = Number(
+    w.forecast.forecastday[1].astro.sunrise.slice(0, 2)
+  ); //finds and converts sunrise hours
 
   // **FINDS START TIME ***
-  let startTime = null;
+
+  /*** FIND DARK HOURS****/
+  let nightHours = []; //these are the night hours of the closest night.
+
   let optimumTime = ""; // optimum time needs to be defined as early as here because of the base case
   let timeOfAccess = Number(w.location.localtime.slice(11, -3)); //Time the person accessed the website
-  timeOfAccess < sunriseHour
-    ? (startTime = sunriseHour)
-    : (startTime = timeOfAccess); // if time of access if before sunrise, start time is sunrise hour.
-  if (timeOfAccess > sunsetHour) optimumTime = "Tomorrow"; // if time of access is after sunset, optimal time is tomorrow
-  let sunnyHours = []; //these are the sunny hours in a day
-  for (let i = 0; i < unfilteredHours.length; i++) {
-    if (i > startTime && i < sunsetHour) sunnyHours.push(unfilteredHours[i]);
-  }
 
-  console.log("sunny hours " + sunnyHours);
-  console.log("sunny hours stringified " + JSON.stringify(sunnyHours));
-  console.log("sunny hours ZERO " + sunnyHours[0]);
-  console.log("sunny hours ZERO TYPE " + typeof sunnyHours);
+  if (timeOfAccess > sunriseHourDay1 && timeOfAccess < sunsetHourDay1) {
+    let day1ValidHours = unfilteredHoursDay1.slice(
+      sunsetHourDay1,
+      unfilteredHoursDay1.length
+    );
+    let day2ValidHours = unfilteredHoursDay2.slice(0, sunriseHourDay2);
+    nightHours.push(day1ValidHours, day2ValidHours);
+  } else if (timeOfAccess > sunsetHourDay1) {
+    let day1ValidHours = unfilteredHoursDay1.slice(
+      timeOfAccess,
+      unfilteredHoursDay1.length
+    );
+    let day2ValidHours = unfilteredHoursDay2.slice(0, sunriseHourDay2);
+    nightHours.push(day1ValidHours, day2ValidHours);
+  } else if (timeOfAccess < sunriseHourDay1) {
+    let day1ValidHours = unfilteredHoursDay1.slice(
+      timeOfAccess,
+      sunriseHourDay1
+    );
+
+    nightHours.push(day1ValidHours);
+  }
 
   /***FINDS DRY HOURS***/
   //pushes the sunny hours to either a dryHours or rainyDayHours array
   let dryHours = []; //these are dry hours in a day
   let rainyDayHours = []; //hours to use on a rainy day (all)
-  for (let i = 0; i < sunnyHours.length; i++) {
-    for (let j = 0; j < sunnyHours[i].length; j++) {
-      if (sunnyHours[i][j].will_it_rain === 0) {
-        dryHours.push(sunnyHours[i]);
-      }
+  for (let i = 0; i < nightHours.length; i++) {
+    for (let j = 0; j < nightHours[i].length; j++) {
+      for (let k = 0; k < nightHours[i][j].length; k++)
+        if (nightHours[i][j][k].will_it_rain === 0) {
+          dryHours.push(nightHours[i][j]);
+        }
     }
   }
   // *** IF NO DRY HOURS, ALL HOURS ARE "ELIGIBLE" HOURS***//
-  if (dryHours.length === 0) rainyDayHours = sunnyHours;
+  if (dryHours.length === 0) rainyDayHours = nightHours;
 
   //**** SORTS HOURS INTO TEMERATURE TYPE *** //
   let comfortableTemp = [];
@@ -52,7 +77,7 @@ function Response(props) {
   let veryHot = [];
 
   if (rainyDayHours.length === 0) {
-    //if not going to rain all day
+    //if not going to rain all night
     for (let i = 0; i < dryHours.length; i++) {
       // loop through dry hours array to find right hour
       for (let j = 0; j < dryHours[i].length; j++) {
@@ -66,7 +91,7 @@ function Response(props) {
       }
     }
   } else {
-    //if whole day is rainy
+    //if whole night is rainy
     for (let i = 0; i < rainyDayHours.length; i++) {
       for (let j = 0; j < rainyDayHours[i].length; j++) {
         if (
@@ -155,18 +180,21 @@ function Response(props) {
     findTime(sortedRainyHot);
   } else if (sortedRainyCold.length > 0) {
     findTime(sortedRainyCold);
-  } else if (timeOfAccess < sunsetHour) {
+  } else if (timeOfAccess < sunriseHourDay1) {
     optimumTime = "Now"; // if none of the arrays have values, and time of access is before sunset, then
     //the time is in the last hour before sunset. So people will need to get out now.
-  } else if (timeOfAccess === sunsetHour) {
-    optimumTime = "Tomorrow"; // best time is tomorrow if access time is after sunset
   }
+  //I might not need this for nightmode
+  //   else if (timeOfAccess === sunriseHour) {
+  //     optimumTime = "Tomorrow"; // best time is tomorrow if access time is after sunset
+  //   }
+
   // *** DEFINES A LATE MESSAGE *** //
   let lateMessage = "";
-  if (optimumTime === "Tomorrow") lateMessage += "It's already dark.";
+  //if (optimumTime === "Tomorrow") lateMessage += "It's already dark.";
   if (optimumTime === "Now")
-    lateMessage += "Get out quickly. It'll be dark within the hour.";
-  if (optimumTime !== "Tomorrow" || optimumTime === "Now") {
+    lateMessage += "Get out quickly. There'll be daylight within the hour.";
+  if (optimumTime !== "Now") {
     return (
       // This is the final response if a time is shown
       <div className="Response">
@@ -174,7 +202,7 @@ function Response(props) {
           <h1 id="location">
             {w.location.name}, {w.location.country}
           </h1>
-          The best time for your walk is<br></br>
+          The best time for your night walk is<br></br>
           <span id="time">{optimumTime} </span>
         </p>
         <p>
@@ -191,7 +219,7 @@ function Response(props) {
           <h1 id="location">
             {w.location.name}, {w.location.country}{" "}
           </h1>{" "}
-          The best time for your walk is<br></br>
+          The best time for your night walk is<br></br>
           <span id="time">{optimumTime} </span>
           <br></br> {lateMessage}
         </p>
@@ -201,4 +229,4 @@ function Response(props) {
   }
 }
 
-export default Response;
+export default ResponseNight;
