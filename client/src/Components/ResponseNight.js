@@ -152,6 +152,8 @@ function ResponseNight(props) {
   // ** FINDS OPTIMUM TIME ** //
   let weatherConditionsAtTime = ""; // weather conditions at time of walk
   let icon = "";
+  //temp
+  let temperatureAtTime = "";
   //functino to find the optimum time
   let findTime = arrayToCheck => {
     if (Number(arrayToCheck[0][0]) > 12) {
@@ -165,6 +167,9 @@ function ResponseNight(props) {
       "Weather at this time:  " +
       arrayToCheck[0][1].condition.text.toLowerCase(); //sets weather conditions
     icon = arrayToCheck[0][1].condition.icon; //sets icon
+
+    temperatureAtTime =
+      "Estimated temperature:  " + arrayToCheck[0][1].temp_c + "ºC"; //sets weather conditions
   };
 
   //uses above function to find the optimum time by going through arrays in the following order:
@@ -208,6 +213,8 @@ function ResponseNight(props) {
         <p>
           <img id="icon" src={icon} /> <br></br>
           {weatherConditionsAtTime}
+          <br></br>
+          {temperatureAtTime}
         </p>
       </div>
     );
