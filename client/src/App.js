@@ -8,10 +8,7 @@ import CityForm from "./Components/CityForm.js";
 import Response from "./Components/Response.js";
 import ResponseRainy from "./Components/ResponseRainy.js";
 import ResponseNight from "./Components/ResponseNight.js";
-import imagePathRain from "./images/rain.jpg";
-import imagePathNight from "./images/night.jpg";
-import imagePathSun from "./images/sunny.jpg";
-import imageWalks from "./images/j8MwX9.png";
+import ChangeBackground from "./Components/ChangeBackground.js";
 import { useHistory } from "react-router-dom";
 
 //Gets the baseurl and apikey from the process env
@@ -134,34 +131,12 @@ function App() {
     }
   };
 
-  // get last pathname
-  let mood = window.location.pathname;
-  mood = mood.slice(1, mood.length);
-  if (mood === "") {
-    mood = "sunny";
-  }
-
-  changeBackground(mood);
-
-  function changeBackground(route) {
-    if (route === "rainy") {
-      document.body.style.backgroundImage = `url(${imagePathRain})`;
-    } else if (route === "night") {
-      document.body.style.backgroundImage = `url(${imagePathNight})`;
-    } else if (route === "sunny") {
-      document.body.style.backgroundImage = `url(${imagePathSun})`;
-    }
-  }
-
   function changeRoute(route) {
     if (route === "rainy") {
-      changeBackground(route);
       history.push("/rainy");
     } else if (route === "night") {
-      changeBackground(route);
       history.push("/night");
     } else if (route === "sunny") {
-      changeBackground(route);
       history.push("/");
     }
   }
@@ -202,6 +177,7 @@ function App() {
         {/*Sunny path - deafult*/}
         {/* Using 'exact' else route will match everything */}
         <Route path="/" exact>
+          <ChangeBackground mood="sunny" />
           <CityForm onSubmit={location => getWeather(location)} />
           {forecast && <Response forecast={forecast} />}
           <br></br>
@@ -209,6 +185,7 @@ function App() {
 
         {/*Rainy path*/}
         <Route path="/rainy" exact>
+          <ChangeBackground mood="rainy" />
           <CityForm onSubmit={location => getWeather(location)} />
           {forecast && <ResponseRainy forecast={forecast} />}
           <br></br>
@@ -216,6 +193,7 @@ function App() {
 
         {/*Night path*/}
         <Route path="/night" exact>
+          <ChangeBackground mood="night" />
           <CityForm onSubmit={location => getWeather2(location)} />
           {forecast && <ResponseNight forecast={forecast} />}
           <br></br>
@@ -223,6 +201,7 @@ function App() {
 
         {/*My Walks path*/}
         <Route path="/mywalks">
+          <ChangeBackground mood="mywalks" />
           <WalkForm
             onSubmit={(title, date, time) => addWalk(title, date, time)}
           />
