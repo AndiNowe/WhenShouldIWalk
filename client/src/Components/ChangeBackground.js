@@ -1,7 +1,7 @@
 import imagePathRain from "./images/rain.jpg";
 import imagePathNight from "./images/night.jpg";
 import imagePathSun from "./images/sunny.jpg";
-import imageWalks from "./images/j8MwX9.png";
+import imageWalks from "./images/mywalks.jpg";
 
 function ChangeBackground(props) {
   let mood = props.mood;
