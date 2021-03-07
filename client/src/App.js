@@ -8,6 +8,11 @@ import CityForm from "./Components/CityForm.js";
 import Response from "./Components/Response.js";
 import ResponseRainy from "./Components/ResponseRainy.js";
 import ResponseNight from "./Components/ResponseNight.js";
+import imagePathRain from "./images/rain.jpg";
+import imagePathNight from "./images/night.jpg";
+import imagePathSun from "./images/sunny.jpg";
+import imageWalks from "./images/j8MwX9.png";
+import { useHistory } from "react-router-dom";
 
 //Gets the baseurl and apikey from the process env
 const BASEURL = "http://api.weatherapi.com/v1";
@@ -17,6 +22,7 @@ function App() {
   let [error, setError] = useState(null);
   let [forecast, setForecast] = useState(null);
   let [walks, setWalks] = useState([]);
+  let history = useHistory();
 
   //calls the getWalks function as an effect of opening the app
   useEffect(() => {
@@ -128,6 +134,38 @@ function App() {
     }
   };
 
+  // get last pathname
+  let mood = window.location.pathname;
+  mood = mood.slice(1, mood.length);
+  if (mood === "") {
+    mood = "sunny";
+  }
+
+  changeBackground(mood);
+
+  function changeBackground(route) {
+    if (route === "rainy") {
+      document.body.style.backgroundImage = `url(${imagePathRain})`;
+    } else if (route === "night") {
+      document.body.style.backgroundImage = `url(${imagePathNight})`;
+    } else if (route === "sunny") {
+      document.body.style.backgroundImage = `url(${imagePathSun})`;
+    }
+  }
+
+  function changeRoute(route) {
+    if (route === "rainy") {
+      changeBackground(route);
+      history.push("/rainy");
+    } else if (route === "night") {
+      changeBackground(route);
+      history.push("/night");
+    } else if (route === "sunny") {
+      changeBackground(route);
+      history.push("/");
+    }
+  }
+
   return (
     <div className="App">
       <Header />
@@ -148,13 +186,13 @@ function App() {
         </a>
 
         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-          <a class="dropdown-item" href="/rainy">
+          <a class="dropdown-item" onClick={() => changeRoute("rainy")}>
             Rainy mood
           </a>
-          <a class="dropdown-item" href="/night">
+          <a class="dropdown-item" onClick={() => changeRoute("night")}>
             Night mode
           </a>
-          <a class="dropdown-item" href="/">
+          <a class="dropdown-item" onClick={() => changeRoute("sunny")}>
             Sunny walk
           </a>
         </div>

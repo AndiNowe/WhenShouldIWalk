@@ -11,6 +11,13 @@ body {
   background-image: rgba(0, 0, 0, 0.5);
 }
 
+.Sunny {
+  background-image: url(images/j8MwX9.png);
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: rgba(0, 0, 0, 0.5);
+}
+
 p {
   color: white;
   font-size: 1.5625rem;

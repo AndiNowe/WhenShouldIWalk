@@ -169,7 +169,7 @@ function ResponseRainy(props) {
   if (optimumTime !== "Tomorrow" || optimumTime === "Now") {
     return (
       // This is the final response if a time is shown
-      <div className="Response">
+      <div className="ResponseRainy">
         <p>
           <h1 id="location">
             {w.location.name}, {w.location.country}
@@ -186,7 +186,7 @@ function ResponseRainy(props) {
   } else {
     return (
       // This is the final response if "tomorrow" is shown
-      <div className="Response">
+      <div className="ResponseRainy">
         <p>
           <h1 id="location">
             {w.location.name}, {w.location.country}{" "}

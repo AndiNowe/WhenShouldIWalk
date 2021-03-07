@@ -197,7 +197,7 @@ function ResponseNight(props) {
   if (optimumTime !== "Now") {
     return (
       // This is the final response if a time is shown
-      <div className="Response">
+      <div className="ResponseNight">
         <p>
           <h1 id="location">
             {w.location.name}, {w.location.country}
@@ -214,7 +214,7 @@ function ResponseNight(props) {
   } else {
     return (
       // This is the final response if "tomorrow" is shown
-      <div className="Response">
+      <div className="ResponseNight">
         <p>
           <h1 id="location">
             {w.location.name}, {w.location.country}{" "}
