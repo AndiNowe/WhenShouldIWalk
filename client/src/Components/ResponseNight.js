@@ -30,6 +30,7 @@ function ResponseNight(props) {
   let optimumTime = ""; // optimum time needs to be defined as early as here because of the base case
   let timeOfAccess = Number(w.location.localtime.slice(11, -3)); //Time the person accessed the website
 
+  //This whole part is different from the other responses, as we deal with 2 days
   if (timeOfAccess > sunriseHourDay1 && timeOfAccess < sunsetHourDay1) {
     let day1ValidHours = unfilteredHoursDay1.slice(
       sunsetHourDay1,
@@ -49,7 +50,6 @@ function ResponseNight(props) {
       timeOfAccess,
       sunriseHourDay1
     );
-
     nightHours.push(day1ValidHours);
   }
 
@@ -175,10 +175,10 @@ function ResponseNight(props) {
   //uses above function to find the optimum time by going through arrays in the following order:
   if (sortedComfortableTemp.length > 0) {
     findTime(sortedComfortableTemp);
-  } else if (sortedCold.length > 0) {
-    findTime(sortedCold);
   } else if (sortedVeryHot.length > 0) {
     findTime(sortedVeryHot);
+  } else if (sortedCold.length > 0) {
+    findTime(sortedCold);
   } else if (sortedRainyComfortable.length > 0) {
     findTime(sortedRainyComfortable);
   } else if (sortedRainyHot.length > 0) {
