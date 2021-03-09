@@ -154,6 +154,7 @@ function App() {
 
       <br></br>
 
+      {/*Bootstrap dropwdown for the mood*/}
       <div class="dropdown show">
         <a
           class="btn btn-secondary dropdown-toggle"
