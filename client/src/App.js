@@ -131,15 +131,22 @@ function App() {
     }
   };
 
-  function changeRoute(route) {
-    if (route === "rainy") {
-      history.push("/rainy");
-    } else if (route === "night") {
-      history.push("/night");
-    } else if (route === "sunny") {
-      history.push("/");
-    }
-  }
+  //to consider in the future: it behaves slightly different than href
+
+  // function changeRoute(route) {
+  //   if (route === "rainy") {
+  //     history.push("/rainy");
+  //   }
+  //   else if (route === "night") {
+  //     history.push("/night");
+  //   }
+  //   else if (route === "sunny") {
+  //     history.push("/");
+  //   }
+  // }
+
+  //for it to work, must include a handleclick on the <a> tags of the dropwdown, like this:
+  //onClick={() => changeRoute("sunny")}
 
   return (
     <div className="App">
@@ -161,13 +168,13 @@ function App() {
         </a>
 
         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-          <a class="dropdown-item" onClick={() => changeRoute("rainy")}>
+          <a class="dropdown-item" href="/night">
             Rainy mood
           </a>
-          <a class="dropdown-item" onClick={() => changeRoute("night")}>
+          <a class="dropdown-item" href="/night">
             Night mode
           </a>
-          <a class="dropdown-item" onClick={() => changeRoute("sunny")}>
+          <a class="dropdown-item" href="/">
             Sunny walk
           </a>
         </div>
