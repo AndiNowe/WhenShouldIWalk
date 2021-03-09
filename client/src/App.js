@@ -169,7 +169,7 @@ function App() {
         </a>
 
         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-          <a class="dropdown-item" href="/night">
+          <a class="dropdown-item" href="/rainy">
             Rainy mood
           </a>
           <a class="dropdown-item" href="/night">
